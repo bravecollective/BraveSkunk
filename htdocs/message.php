@@ -7,19 +7,15 @@ $sid = session_id();
 
 if( !CheckSession( $sid ) )
 {
-	header( "Location: /login.php" );
+	header( "Location: /index.php" );
 	exit();
 }
 
-$m = new MongoClient();
-$session = $m->braveskunk->sessions->findOne( array( "session" => $sid ) );
-$rights = $session["rights"];
-unset( $m );
-unset( $session );
+$rights = GetRights( $sid );
 
 if( !isset( $_GET["message"] ) || $_GET["message"] == NULL )
 {
-	header( "Location: index.php" );
+	header( "Location: /index.php" );
 	exit();
 }
 
@@ -31,6 +27,7 @@ $m = new MongoClient();
 $doc = $m->braveskunk->mails->findOne( array( "id" => $id ) );
 $sender = $m->braveskunk->characters->findOne( array( "id" => (int)$doc["sender"] ) )["name"];
 $rcvrs = "";
+
 if( strpos( $doc["receiver"], "," ) !== false )
 {
 	$temp = explode( ",", $doc["receiver"] );
@@ -64,7 +61,7 @@ if( strpos( $doc["receiver"], "," ) !== false )
 			{
 				$rcvrs = $rcvrs . "<a href=\"corpinfo.php?id=". $temp[$i] ."\">" . $name . "</a>";
 			}
-			if( $type == 2 && $rights == 2 )
+			if( $type == 2 )
 			{
 				$rcvrs = $rcvrs . "<a href=\"charinfo.php?id=". $temp[$i] ."\">" . $name . "</a>";
 			}
@@ -83,7 +80,7 @@ if( strpos( $doc["receiver"], "," ) !== false )
 			{
 				$rcvrs = $rcvrs . ", <a href=\"corpinfo.php?id=". $temp[$i] ."\">" . $name . "</a>";
 			}
-			if( $type == 2 && $rights == 2 )
+			if( $type == 2 )
 			{
 				$rcvrs = $rcvrs . ", <a href=\"charinfo.php?id=". $temp[$i] ."\">" . $name . "</a>";
 			}
@@ -104,11 +101,8 @@ else
 		$rcvrs = "To: <a href=\"corpinfo.php?id=" . $doc["receiver"] . "\">" . $name . "</a>";
 		if( !$name )
 		{
-			if( $rights == 2 )
-			{
-				$name = $m->braveskunk->characters->findOne( array( "id" => (int)$doc["receiver"] ) )["name"];
-				$rcvrs = "To: <a href=\"charinfo.php?id=" . $doc["receiver"] . "\">" . $name . "</a>";
-			}
+			$name = $m->braveskunk->characters->findOne( array( "id" => (int)$doc["receiver"] ) )["name"];
+			$rcvrs = "To: <a href=\"charinfo.php?id=" . $doc["receiver"] . "\">" . $name . "</a>";
 			if( !$name )
 			{
 				$name = $m->braveskunk->maillists->findOne( array( "id" => (int)$doc["receiver"] ) )["name"];
@@ -118,10 +112,15 @@ else
 	}
 }
 
-print( "<div class=\"frame\">\n" );
-print( "<div class=\"center\"><b>" . $doc["date"] . " - " . $doc["title"] . "</b></div>\n" );
+print( "<div class=\"container\">\n" );
+print( "<div class=\"page-header\"><h1>Spais-R-Us <small>EVE-Mail \"" . $doc["date"] . " - " . $doc["title"] . "\"</small></h1></div>\n" );
+print( "<div class=\"list-group media-list clearfix\">\n" );
+
 print( "From: <a href=\"charinfo.php?id=" . $doc["sender"] . "\">" . $sender . "</a><br>\n" );
-print( $rcvrs ."<br>\n" );
+if( $rights == 2 )
+{
+	print( $rcvrs ."<br>\n" );
+}
 print( strip_tags( $doc["body"], "<br>" ) . "\n" );
 print( "</div>\n" );
 

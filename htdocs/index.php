@@ -11,17 +11,25 @@ if( !CheckSession( $sid ) )
 	exit();
 }
 
-$m = new MongoClient();
-$session = $m->braveskunk->sessions->findOne( array( "session" => $sid ) );
-
 include( "header.html" );
 
 $m = new MongoClient();
 $cursor = $m->braveskunk->mails->find()->sort( array( "date" => -1 ) );
 
-print( "<div class=\"center\"><b>BraveSkunk v0.1</b></div>\n" );
-print( "<div class=\"center\"><table width=\"100%\"><tr><td align=\"left\">Currently logged in as: <b>" . $session["name"] . "</b></td><td align=\"right\"><a href=\"logout.php\">Logout</a></td></tr></table></div>\n" );
-print( "<div class=\"frame\">\n" );
+print( "<div class=\"container\">\n" );
+print( "<div class=\"page-header\"><h1>Spais-R-Us</h1></div>\n" );
+
+$rights = GetRights( $sid );
+if( $rights == 1 || $rights == 2 )
+{
+	print( "<ul class=\"nav nav-pills pull-right\">\n" );
+	print( "<li><a href=\"/submit.php\"><i class=\"fa fa-arrow-circle-o-right fa-lg\"></i>Submit an API Key</a></li>\n" );
+	print( "</ul>\n" );
+}
+
+print( "<h4>Currently known EVE-Mails</h4>\n" );
+
+print( "<div class=\"list-group media-list clearfix\">\n" );
 
 foreach( $cursor as $doc )
 {
@@ -36,10 +44,10 @@ foreach( $cursor as $doc )
 	{
 		$ticker = "&#60" . $ticker . "&#62";
 	}
-	print( "<div>\n" );
+	print( "<ul class=\"list-group-item media thread\">\n" );
 	print( "<b>" . $doc["date"] . "</b>\n" );
 	print( "<a href=\"message.php?message=" . $doc["id"] . "\">" . $ticker . " " . $sender . " - " . $doc["title"] . "</a><br>\n" );
-	print( "</div>\n" );
+	print( "</ul>\n" );
 }
 
 print( "</div>\n" );
