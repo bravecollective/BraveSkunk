@@ -1,0 +1,9 @@
+{
+	"name": "BraveSkunk",
+	"description": "EveSkunk for Brave Collective",
+	"keywords": ["eve-online", "skunk", "brave"],
+	"license": "MIT",
+	"require": {
+		"bravecollective/php-api": "*"
+	}
+}
