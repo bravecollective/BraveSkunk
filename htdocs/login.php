@@ -1,51 +1,33 @@
 <?php
 
-include( "functions.php" );
+include_once( "functions.php" );
 
-if( !empty( $_POST ) )
+session_start();
+$sid = session_id();
+
+if( CheckSession( $sid ) )
 {
-	if( $_POST["uid"] and $_POST["pswd"] )
-	{
-		$uid = $_POST["uid"];
-		$pswd = $_POST["pswd"];
-		Login( $uid, $pswd );
-	}
-}
-else
-{
-	main();
+	header( "Location: /index.php" );
+	exit();
 }
 
-function Login( $uid, $pswd )
-{
-	$date = "Date: " . GetNow();
-	print( $date );
-}
+// include composer autoloader
+require('vendor/autoload.php');
+define('USE_EXT', 'GMP');
 
-function main()
-{
-	include( "header.html" );
+// API Keys
+include_once( "settings.php" );
 
-	print( "<div class=\"frame\">\n" );
-	print( "<form method=\"post\" action=\"login.php\">\n" );
-	print( "<table>\n");
-	print( "<tr>\n" );
-	print( "<td>Username:</td>\n" );
-	print( "<td><input name=\"uid\" autofocus></td>\n" );
-	print( "</tr>\n" );
-	print( "<tr>\n" );
-	print( "<td>Password:</td>\n" );
-	print( "<td><input type=\"password\" name=\"pswd\"></td>\n" );
-	print( "</tr>\n" );
-	print( "<tr>\n" );
-	print( "<td></td>\n" );
-	print( "<td class=\"center\"><input type=\"submit\" value=\"Submit\"></td>\n" );
-	print( "</tr>\n" );
-	print( "</table>\n" );
-	print( "</form>\n" );
-	print( "</div>\n" );
+// API Class Setup
+$api = new Brave\API('https://core.bravecollective.net/api', $application_id, $private_key, $public_key);
 
-	include( "footer.html" );
-}
+// API Call Args
+$info_data = array(
+	'success' => 'http://ec2-54-201-154-61.us-west-2.compute.amazonaws.com/step2.php',
+	'failure' => 'http://ec2-54-201-154-61.us-west-2.compute.amazonaws.com/failure.php'
+);
+$result = $api->core->authorize($info_data);
 
-?>
+// Redirect back to the auth platform for user authentication approval
+header("Location: ".$result->location);
+exit();

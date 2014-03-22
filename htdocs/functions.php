@@ -1,10 +1,24 @@
 <?php
 
-function GetNow()
+function CheckSession( $sid )
 {
-	$curTime = new DateTime( "NOW", new DateTimeZone( "UTC" ) );
-	$dateStr = str_replace( "+0000", "UTC", $curTime->format( DateTime::RFC1123 ) );
-	return $dateStr;
+	$m = new MongoClient();
+	$session = $m->braveskunk->sessions->findOne( array( "session" => $sid ) );
+	unset( $m );
+
+	if( $session == NULL )
+	{
+		return false;
+	}
+
+	if( $session["expiry"] < $_SERVER["REQUEST_TIME"] )
+	{
+		$m = new MongoClient();
+		$result = $m->braveskunk->sessions->remove( $session );
+		unset( $m );
+		return false;
+	}
+	return true;
 }
 
 ?>

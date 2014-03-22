@@ -1,156 +1,51 @@
 <?php
 
-if( !empty( $_GET ) )
+include_once( "functions.php" );
+
+session_start();
+$sid = session_id();
+
+if( !CheckSession( $sid ) )
 {
-	if( $_GET["message"] )
-	{
-		DisplayMessage( $_GET["message"] );
-	}
-	else
-	{
-		main();
-	}
-}
-else
-{
-	main();
+	header( "Location: /login.php" );
+	exit();
 }
 
-function DisplayMessage( $id )
-{
-	include( "header.html" );
+$m = new MongoClient();
+$session = $m->braveskunk->sessions->findOne( array( "session" => $sid ) );
 
-	$m = new MongoClient();
-	$doc = $m->braveskunk->mails->findOne( array( "id" => $id ) );
+include( "header.html" );
+
+$m = new MongoClient();
+$cursor = $m->braveskunk->mails->find()->sort( array( "date" => -1 ) );
+
+print( "<div class=\"center\"><b>BraveSkunk v0.1</b></div>\n" );
+print( "<div class=\"center\"><table width=\"100%\"><tr><td align=\"left\">Currently logged in as: <b>" . $session["name"] . "</b></td><td align=\"right\"><a href=\"logout.php\">Logout</a></td></tr></table></div>\n" );
+print( "<div class=\"frame\">\n" );
+
+foreach( $cursor as $doc )
+{
 	$sender = $m->braveskunk->characters->findOne( array( "id" => (int)$doc["sender"] ) )["name"];
-	$rcvrs = "";
-	if( strpos( $doc["receiver"], "," ) !== false )
+	$parent = $m->braveskunk->characters->findOne( array( "id" => (int)$doc["sender"] ) )["parentID"];
+	$ticker = $m->braveskunk->alliances->findOne( array( "id" => (int)$parent ) )["ticker"];
+	if( !$ticker )
 	{
-		$temp = explode( ",", $doc["receiver"] );
-		for( $i = 0; $i < count( $temp ); $i++ )
-		{
-			$name = $m->braveskunk->alliances->findOne( array( "id" => (int)$temp[$i] ) )["name"];
-			$type = 0;
-			if( !$name )
-			{
-				$name = $m->braveskunk->corporations->findOne( array( "id" => (int)$temp[$i] ) )["name"];
-				$type = 1;
-				if( !$name )
-				{
-					$name = $m->braveskunk->characters->findOne( array( "id" => (int)$temp[$i] ) )["name"];
-					$type = 2;
-					if( !$name )
-					{
-						$name = $m->braveskunk->maillists->findOne( array( "id" => (int)$temp[$i] ) )["name"];
-						$type = 3;
-					}
-				}
-			}
-			if( $rcvrs == "" )
-			{
-				$rcvrs = "To: ";
-				if( $type == 0 )
-				{
-					$rcvrs = $rcvrs . "<a href=\"allyinfo.php?id=". $temp[$i] ."\">" . $name . "</a>";
-				}
-				if( $type == 1 )
-				{
-					$rcvrs = $rcvrs . "<a href=\"corpinfo.php?id=". $temp[$i] ."\">" . $name . "</a>";
-				}
-				if( $type == 2 )
-				{
-					$rcvrs = $rcvrs . "<a href=\"charinfo.php?id=". $temp[$i] ."\">" . $name . "</a>";
-				}
-				if( $type == 3 )
-				{
-					$rcvrs = $rcvrs . "<a href=\"mlinfo.php?id=". $temp[$i] ."\">" . $name . "</a>";
-				}
-			}
-			else
-			{
-				if( $type == 0 )
-				{
-					$rcvrs = $rcvrs . ", <a href=\"allyinfo.php?id=". $temp[$i] ."\">" . $name . "</a>";
-				}
-				if( $type == 1 )
-				{
-					$rcvrs = $rcvrs . ", <a href=\"corpinfo.php?id=". $temp[$i] ."\">" . $name . "</a>";
-				}
-				if( $type == 2 )
-				{
-					$rcvrs = $rcvrs . ", <a href=\"charinfo.php?id=". $temp[$i] ."\">" . $name . "</a>";
-				}
-				if( $type == 3 )
-				{
-					$rcvrs = $rcvrs . ", <a href=\"mlinfo.php?id=". $temp[$i] ."\">" . $name . "</a>";
-				}
-			}
-		}
+		$ticker = $m->braveskunk->corporations->findOne( array( "id" => (int)$parent ) )["ticker"];
 	}
-	else
+	if( $ticker != "" )
 	{
-		$name = $m->braveskunk->alliances->findOne( array( "id" => (int)$doc["receiver"] ) )["name"];
-		$rcvrs = "To: <a href=\"allyinfo.php?id=" . $doc["receiver"] . "\">" . $name . "</a>";
-		if( !$name )
-		{
-			$name = $m->braveskunk->corporations->findOne( array( "id" => (int)$doc["receiver"] ) )["name"];
-			$rcvrs = "To: <a href=\"corpinfo.php?id=" . $doc["receiver"] . "\">" . $name . "</a>";
-			if( !$name )
-			{
-				$name = $m->braveskunk->characters->findOne( array( "id" => (int)$doc["receiver"] ) )["name"];
-				$rcvrs = "To: <a href=\"charinfo.php?id=" . $doc["receiver"] . "\">" . $name . "</a>";
-				if( !$name )
-				{
-					$name = $m->braveskunk->maillists->findOne( array( "id" => (int)$doc["receiver"] ) )["name"];
-					$rcvrs = "To: <a href=\"mlinfo.php?id=" . $doc["receiver"] . "\">" . $name . "</a>";
-				}
-			}
-		}
+		$ticker = "&#60" . $ticker . "&#62";
 	}
-
-	print( "<div class=\"frame\">\n" );
-	print( "<div class=\"center\"><b>" . $doc["date"] . " - " . $doc["title"] . "</b></div>\n" );
-	print( "From: <a href=\"charinfo.php?id=" . $doc["sender"] . "\">" . $sender . "</a><br>\n" );
-	print( $rcvrs );
-	print( "<br>\n" );
-	print( strip_tags( $doc["body"], "<br>" ) . "\n" );
+	print( "<div>\n" );
+	print( "<b>" . $doc["date"] . "</b>\n" );
+	print( "<a href=\"message.php?message=" . $doc["id"] . "\">" . $ticker . " " . $sender . " - " . $doc["title"] . "</a><br>\n" );
 	print( "</div>\n" );
-
-	include( "footer.html" );
 }
 
-function main()
-{
-	include( "header.html" );
+print( "</div>\n" );
 
-	$m = new MongoClient();
-	$cursor = $m->braveskunk->mails->find()->sort( array( "date" => -1 ) );
+unset( $m );
 
-	print( "<div class=\"center\"><b>BraveSkunk v0.1</b></div>\n" );
-	print( "<div class=\"frame\">\n" );
-
-	foreach( $cursor as $doc )
-	{
-		$sender = $m->braveskunk->characters->findOne( array( "id" => (int)$doc["sender"] ) )["name"];
-		$parent = $m->braveskunk->characters->findOne( array( "id" => (int)$doc["sender"] ) )["parentID"];
-		$ticker = $m->braveskunk->alliances->findOne( array( "id" => (int)$parent ) )["ticker"];
-		if( !$ticker )
-		{
-			$ticker = $m->braveskunk->corporations->findOne( array( "id" => (int)$parent ) )["ticker"];
-		}
-		if( $ticker != "" )
-		{
-			$ticker = "&#60" . $ticker . "&#62";
-		}
-		print( "<div>\n" );
-		print( "<b>" . $doc["date"] . "</b>\n" );
-		print( "<a href=\"?message=" . $doc["id"] . "\">" . $ticker . " " . $sender . " - " . $doc["title"] . "</a><br>\n" );
-		print( "</div>\n" );
-	}
-
-	print( "</div>\n" );
-
-	include( "footer.html" );
-}
+include( "footer.html" );
 
 ?>
