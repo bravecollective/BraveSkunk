@@ -23,7 +23,14 @@ $rights = GetRights( $sid );
 if( $rights == 1 || $rights == 2 )
 {
 	print( "<ul class=\"nav nav-pills pull-right\">\n" );
-	print( "<li><a href=\"/submit.php\"><i class=\"fa fa-arrow-circle-o-right fa-lg\"></i>Submit an API Key</a></li>\n" );
+	if( $rights == 1 )
+	{
+		print( "<li><a href=\"/submit.php\"><i class=\"fa fa-arrow-circle-o-right fa-lg\"></i>Submit an API Key</a></li>\n" );
+	}
+	if( $rights == 2 )
+	{
+		print( "<li><a href=\"/manage.php\"><i class=\"fa fa-arrow-circle-o-right fa-lg\"></i>Manage API Keys</a></li>\n" );
+	}
 	print( "</ul>\n" );
 }
 

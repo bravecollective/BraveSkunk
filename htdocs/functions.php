@@ -15,6 +15,7 @@ function CheckSession( $sid )
 	{
 		$m = new MongoClient();
 		$result = $m->braveskunk->sessions->remove( $session );
+		unset( $result );
 		unset( $m );
 		return false;
 	}
@@ -50,5 +51,13 @@ function AddAPIKey( $keyid, $vCode )
 	}
 }
 
+function DelAPIKey( $objID )
+{
+	$row = array( "_id" => new MongoId( $objID ) );
+	$m = new MongoClient();
+	$result = $m->braveskunk->apikeys->remove( $row );
+	unset( $result );
+	unset( $m );
+}	
 
 ?>

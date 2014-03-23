@@ -28,25 +28,19 @@ if( isset( $_POST["keyid"] ) && isset( $_POST["vCode"] ) && !empty( $_POST["keyi
 include( "header.html" );
 
 print( "<div class=\"container\">\n" );
-print( "<div class=\"page-header\"><h1>Spais-R-Us <small>Submit a new API Key</small></h1></div>\n" );
+print( "<div class=\"page-header\"><h1>Spais-R-Us</h1></div>\n" );
+print( "<h4>Submit a new API Key</h4>\n" );
 
-print( "<form method=\"post\" action=\"submit.php\">\n" );
-print( "<table>\n" );
-print( "<tr>\n" );
-print( "<td>Key ID:</td>\n" );
-print( "<td><input name=\"keyid\" autofocus></td>\n" );
-print( "</tr>\n" );
-print( "<tr>\n" );
-print( "<td>vCode:</td>\n" );
-print( "<td><input name=\"vCode\"></td>\n" );
-print( "</tr>\n" );
-print( "<tr>\n" );
-print( "<td></td>\n" );
-print( "<td class=\"center\"><input type=\"submit\" value=\"Submit\"></td>\n" );
-print( "</tr>\n" );
-print( "</table>\n" );
+
+print( "<div class=\"list-group clearfix\">\n" );
+print( "<div class=\"list-group-item media-list clearfix\">\n" );
+print( "<form style=\"text-align: center\" method=\"post\" action=\"submit.php\">\n" );
+print( "<li><input class=\"\" type=\"text\" name=\"keyid\" autofocus placeholder=\"API Key ID\"></li>\n" );
+print( "<li><input type=\"text\" name=\"vCode\" placeholder=\"API vCode\"></li>\n" );
+print( "<button type=\"submit\">Submit</button>\n" );
 print( "</form>\n" );
 
+print( "</div>\n" );
 print( "</div>\n" );
 
 include( "footer.html" );
