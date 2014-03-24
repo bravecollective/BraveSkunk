@@ -20,7 +20,12 @@ if( $rights < 2 )
 
 if( isset( $_POST["objID"] ) && !empty( $_POST["objID"] ) )
 {
-	DelAPIKey( $_POST["objID"] );
+	$id = ValCode( $_POST["objID"] );
+	if( $id == NULL )
+	{
+		exit( "Invalid object id." );
+	}
+	DelAPIKey( $id );
 	header( "Location: /manage.php" );
 	exit();
 }

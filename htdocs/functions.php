@@ -2,6 +2,11 @@
 
 function CheckSession( $sid )
 {
+	if( ValCode( $sid ) == NULL )
+	{
+		header( "Location: http://www.google.com" );
+		exit();
+	}
 	$m = new MongoClient();
 	$session = $m->braveskunk->sessions->findOne( array( "session" => $sid ) );
 	unset( $m );
@@ -38,6 +43,16 @@ function GetRights( $sid )
 	unset( $m );
 
 	return( $session["rights"] );
+}
+
+function ValID( $id )
+{
+	return( filter_var( $id, FILTER_VALIDATE_INT, array( "options" => array( "default" => NULL ) ) ) );
+}
+
+function ValCode( $vCode )
+{
+	return( filter_var( $vCode, FILTER_VALIDATE_REGEXP, array( "options" => array( "default" => NULL, "regexp" => "/^[[:alnum:]]+$/" ) ) ) );
 }
 
 function AddAPIKey( $keyid, $vCode )

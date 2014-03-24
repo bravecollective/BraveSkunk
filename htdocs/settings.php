@@ -1,5 +1,11 @@
 <?php
 
+if( $_SERVER["PHP_SELF"] != "/login.php" )
+{
+	header( "Location: http://www.google.com" );
+	exit();
+}
+
 // Application ID
 $application_id = '5328f12458b70047ebb9d377';
 

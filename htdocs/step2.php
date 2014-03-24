@@ -17,7 +17,11 @@ define('USE_EXT', 'GMP');
 include_once( "settings.php" );
 
 // Get Token from core. DO THIS WITH PROPER SECURITY WHEN DEVELOPING REAL APPLICATIONS
-$token = $_GET['token'];
+$token = ValCode( $_GET['token'] );
+if( $token == NULL )
+{
+	exit( "Invalid token received." );
+}
 
 // API Class Setup
 $api = new Brave\API('https://core.bravecollective.net/api', $application_id, $private_key, $public_key);

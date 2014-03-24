@@ -19,7 +19,12 @@ if( !isset( $_GET["message"] ) || $_GET["message"] == NULL )
 	exit();
 }
 
-$id = $_GET["message"];
+$id = ValID( $_GET["message"] );
+if( $id == NULL )
+{
+	header( "Location: /index.php" );
+	exit();
+}
 
 include( "header.html" );
 

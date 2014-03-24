@@ -17,7 +17,12 @@ if( !isset( $_GET["id"] ) || empty( $_GET["id"] ) )
 	exit();
 }
 
-$id = $_GET["id"];
+$id = ValID( $_GET["id"] );
+if( $id == NULL )
+{
+	header( "Location: /index.php" );
+	exit();
+}
 
 include( "header.html" );
 

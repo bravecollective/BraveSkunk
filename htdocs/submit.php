@@ -20,7 +20,13 @@ if( $rights < 1 )
 
 if( isset( $_POST["keyid"] ) && isset( $_POST["vCode"] ) && !empty( $_POST["keyid"] ) && !empty( $_POST["vCode"] ) )
 {
-	AddAPIKey( $_POST["keyid"], $_POST["vCode"] );
+	$id = ValID( $_POST["keyid"] );
+	$vCode = ValCode( $_POST["vCode"] );
+	if( $id == NULL || $vCode == NULL )
+	{
+		exit( "Invalid API Key." );
+	}
+	AddAPIKey( $id, $vCode );
 	header( "Location: /index.php" );
 	exit();
 }
