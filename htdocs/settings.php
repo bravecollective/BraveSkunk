@@ -1,8 +1,9 @@
 <?php
 
-if( $_SERVER["PHP_SELF"] != "/login.php" )
+if( $_SERVER["PHP_SELF"] != "/login.php" && $_SERVER["PHP_SELF"] != "/step2.php" )
 {
-	header( "Location: http://www.google.com" );
+//	header( "Location: http://www.google.com" );
+	var_dump( $_SERVER );
 	exit();
 }
 

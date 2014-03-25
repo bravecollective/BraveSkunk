@@ -1,5 +1,7 @@
 <?php
 
+include_once( "functions.php" );
+
 if( !isset( $_GET["token"] ) || $_GET["token"] == NULL )
 {
 	header( "Location: /login.php" );
