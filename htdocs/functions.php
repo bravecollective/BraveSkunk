@@ -47,7 +47,12 @@ function GetRights( $sid )
 
 function ValID( $id )
 {
-	return( filter_var( $id, FILTER_VALIDATE_INT, array( "options" => array( "default" => NULL ) ) ) );
+	$tmp = filter_var( $id, FILTER_VALIDATE_INT, array( "options" => array( "default" => NULL ) ) );
+	if( $tmp != NULL )
+	{
+		$tmp = (string)$tmp;
+	}
+	return $tmp;
 }
 
 function ValCode( $vCode )
