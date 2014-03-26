@@ -27,6 +27,42 @@ function CheckSession( $sid )
 	return true;
 }
 
+function GetAllies()
+{
+	$m = new MongoClient();
+	$allies = $m->braveskunk->mailallies->find();
+	unset( $m );
+	foreach( $allies as $doc )
+	{
+		print( "<li><a href=\"/allyinfo.php?id=" . $doc["id"] . "\">" . $doc["name"] . "</a></li>\n" );
+	}
+	unset( $allies );
+}
+
+function GetCorps()
+{
+	$m = new MongoClient();
+	$corps = $m->braveskunk->corporations->find();
+	unset( $m );
+	foreach( $corps as $doc )
+	{
+		print( "<li><a href=\"/corpinfo.php?id=" . $doc["id"] . "\">" . $doc["name"] . "</a></li>\n" );
+	}
+	unset( $corps );
+}
+
+function GetLists()
+{
+	$m = new MongoClient();
+	$lists = $m->braveskunk->maillists->find();
+	unset( $m );
+	foreach( $lists as $doc )
+	{
+		print( "<li><a href=\"/mlinfo.php?id=" . $doc["id"] . "\">" . $doc["name"] . "</a></li>\n" );
+	}
+	unset( $lists );
+}
+
 function GetName( $sid )
 {
 	$m = new MongoClient();
