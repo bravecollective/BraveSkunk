@@ -7,9 +7,15 @@ import xml.etree.ElementTree as ET
 client = MongoClient()
 apikeys = client.braveskunk.apikeys.find()
 
+# List of All Alliances
 Alliances = {}
+# List of Alliances found in mails
+Allies = {}
+# List of Corps found in mails
 Corporations = {}
+# List of Characters found in mails
 Characters = {}
+# List of Mailing Lists from characters
 MailingLists = {}
 mails = []
 
@@ -17,6 +23,13 @@ mails = []
 ##### Grab data from DB *****
 #
 # Obtain Corporation IDs and names from MongoDB
+def GetAlliesFromDB():
+	global Allies
+	if( client.braveskunk.mailallies.count() > 0 ):
+		rows = client.braveskunk.mailallies.find()
+		for row in rows:
+			Allies[row["id"]] = { "name": row["name"], "ticker": row["ticker"] }
+
 def GetCorpsFromDB():
 	global Corporations
 	if( client.braveskunk.corporations.count() > 0 ):
@@ -108,6 +121,8 @@ def FetchCharData( id ):
 
 # Obtain mails from Eve API using previously built reqStrings, it then processes them, adding data to global dicts as needed
 def GetMails( reqStrings ):
+	global Allies
+	global Alliances
 	global mails
 	apimails = []
 	apibodies = []
@@ -171,6 +186,10 @@ def GetMails( reqStrings ):
 			else:
 				rcvr = "Nobody"
 
+			# Determine if this mail's destination is an Alliance and store it
+			if( rcvr in Alliances and rcvr not in Allies ):
+				Allies[rcvr] = { "name": Alliances[rcvr]["name"], "ticker": Alliances[rcvr]["ticker"]
+
 			bodytext = apibodies.findall( ".//*[@messageID=\'" + message["messageID"] + "\']" )[0].text
 			mails.append( dict( id=message["messageID"], sender=sendChar, date=message["sentDate"], receiver=rcvr, title=message["title"], body=bodytext ) )
 
@@ -179,6 +198,7 @@ def GetMails( reqStrings ):
 # Adds all interesting information to DB for future usage.
 def AddToDB():
 	global Alliances
+	global Allies
 	global Corporations
 	global Characters
 	global MailingLists
@@ -188,6 +208,10 @@ def AddToDB():
 	for key, value in Alliances.items():
 		row = { "id": key, "name": value["name"], "ticker": value["ticker"] }
 		insert_id = client.braveskunk.alliances.insert( row )
+
+	for key, value in Allies.items():
+		row = { "id": key, "name": value["name"], "ticker": value["ticker"] }
+		insert_id = client.braveskunk.mailallies.insert( row )
 
 	for key, value in Corporations.items():
 		row = { "id": key, "name": value["name"], "ticker": value["ticker"], "parentID": value["parentID"] }
