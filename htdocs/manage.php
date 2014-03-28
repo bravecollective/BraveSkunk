@@ -20,6 +20,7 @@ if( $rights < 2 )
 
 if( isset( $_POST["objID"] ) && !empty( $_POST["objID"] ) )
 {
+	LogAccess( $sid );
 	$id = ValCode( $_POST["objID"] );
 	if( $id == NULL )
 	{
@@ -29,6 +30,8 @@ if( isset( $_POST["objID"] ) && !empty( $_POST["objID"] ) )
 	header( "Location: /manage.php" );
 	exit();
 }
+
+LogAccess( $sid );
 
 include( "header.html" );
 

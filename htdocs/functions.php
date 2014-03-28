@@ -116,4 +116,16 @@ function DelAPIKey( $objID )
 	unset( $m );
 }	
 
+function LogAccess( $sid )
+{
+	$m = new MongoClient();
+	$session = $m->braveskunk->sessions->findOne( array( "session" => $sid ) );
+
+	$row = array( "time" => $_SERVER["REQUEST_TIME"], "address" => $_SERVER["REMOTE_ADDR"], "url" => $_SERVER["REQUEST_URI"], "user" => $session["name"] );
+	$result = $m->braveskunk->logs->insert( $row );
+	unset( $result );
+	unset( $session );
+	unset( $m );
+}
+
 ?>

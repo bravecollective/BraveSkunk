@@ -11,6 +11,8 @@ if( !CheckSession( $sid ) )
 	exit();
 }
 
+LogAccess( $sid );
+
 include( "header.html" );
 
 $m = new MongoClient();

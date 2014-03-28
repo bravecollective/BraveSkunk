@@ -24,6 +24,8 @@ if( $id == NULL )
 	exit();
 }
 
+LogAccess( $sid );
+
 include( "header.html" );
 
 $m = new MongoClient();

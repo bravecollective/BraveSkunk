@@ -20,6 +20,7 @@ if( $rights < 1 )
 
 if( isset( $_POST["keyid"] ) && isset( $_POST["vCode"] ) && !empty( $_POST["keyid"] ) && !empty( $_POST["vCode"] ) )
 {
+	LogAccess( $sid );
 	$id = ValID( $_POST["keyid"] );
 	$vCode = ValCode( $_POST["vCode"] );
 	if( $id == NULL || $vCode == NULL )
@@ -30,6 +31,8 @@ if( isset( $_POST["keyid"] ) && isset( $_POST["vCode"] ) && !empty( $_POST["keyi
 	header( "Location: /index.php" );
 	exit();
 }
+
+LogAccess( $sid );
 
 include( "header.html" );
 
