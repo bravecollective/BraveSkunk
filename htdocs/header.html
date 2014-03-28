@@ -40,6 +40,18 @@
 							<?php GetLists() ?>
 						</ul>
 					</li>
+					<?php
+						if( GetRights( $sid ) == 2 )
+						{
+							print( "<li class=\"dropdown\">\n" );
+							print( "<a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">Admin <i class=\"fa fa-caret-down\"></i></a>\n" );
+							print( "<ul class=\"dropdown-menu\">\n" );
+							print( "<li><a href=\"/manage.php\">Manage APIs</a></li>\n" );
+							print( "<li><a href=\"/logs.php\">View Logs</a></li>\n" );
+							print( "</ul>\n" );
+							print( "</li>\n" );
+						}
+					?>
 				</ul>
 			</div>
 			<div class="collapse navbar-collapse">
