@@ -128,7 +128,12 @@ if( $rights == 2 )
 {
 	print( $rcvrs ."<br>\n" );
 }
-print( strip_tags( $doc["body"], "<br>" ) . "\n" );
+$body = strip_tags( $doc["body"], "<br>" );
+if( $rights != 2 )
+{
+	$body = preg_replace( "/(<br>To:)[[:alpha:], ]*(<br>)/", "<br>", $body );
+}
+print( $body . "\n" );
 print( "</div>\n" );
 
 include( "footer.html" );
