@@ -122,6 +122,7 @@ else
 print( "<div class=\"container\">\n" );
 print( "<div class=\"page-header\"><h1>Spais-R-Us <small>EVE-Mail \"" . $doc["date"] . " - " . $doc["title"] . "\"</small></h1></div>\n" );
 print( "<div class=\"list-group media-list clearfix\">\n" );
+print( "<div class=\"list-group-item media thread\">\n" );
 
 print( "From: <a href=\"charinfo.php?id=" . $doc["sender"] . "\">" . $sender . "</a><br>\n" );
 if( $rights == 2 )
@@ -134,6 +135,7 @@ if( $rights != 2 )
 	$body = preg_replace( "/(<br>To:)[[:alpha:], ]*(<br>)/", "<br>", $body );
 }
 print( $body . "\n" );
+print( "</div>\n" );
 print( "</div>\n" );
 
 include( "footer.html" );
