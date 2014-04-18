@@ -16,7 +16,6 @@ LogAccess( $sid );
 include( "header.html" );
 
 $m = new MongoClient();
-$cursor = $m->braveskunk->mails->find()->sort( array( "date" => -1 ) );
 
 print( "<div class=\"container\">\n" );
 print( "<div class=\"page-header\"><h1>Spais-R-Us</h1></div>\n" );
@@ -38,26 +37,39 @@ if( $rights == 1 || $rights == 2 )
 
 print( "<h4>Currently known EVE-Mails</h4>\n" );
 
-print( "<div class=\"list-group media-list clearfix\">\n" );
+print( "<div>\n" );
 
+print( "<table class=\"table table-hover\">\n" );
+print( "<thead>\n" );
+print( "<tr>\n" );
+print( "<th>Alliance</th>\n" );
+print( "<th>Subject</th>\n" );
+print( "<th><div class=\"pull-right\">Sent</div></th>\n" );
+print( "</tr>\n" );
+print( "</thead>\n" );
+print( "<tbody style=\"background-color: rgba( 0, 0, 0, 0.5 );\">\n" );
+
+$cursor = $m->braveskunk->mails->find()->sort( array( "date" => -1 ) );
 foreach( $cursor as $doc )
 {
-	$sender = $m->braveskunk->characters->findOne( array( "id" => (int)$doc["sender"] ) )["name"];
-	$parent = $m->braveskunk->characters->findOne( array( "id" => (int)$doc["sender"] ) )["parentID"];
-	$ticker = $m->braveskunk->alliances->findOne( array( "id" => (int)$parent ) )["ticker"];
-	if( !$ticker )
+	$to = $m->braveskunk->mailallies->findOne( array( "id" => (int)$doc["receiver"] ) )["name"];
+	if( !$to )
 	{
-		$ticker = $m->braveskunk->corporations->findOne( array( "id" => (int)$parent ) )["ticker"];
+		$to = $m->braveskunk->corporations->findOne( array( "id" => (int)$doc["receiver"] ) )["name"];
 	}
-	if( $ticker != "" )
+
+	if( $to != "" )
 	{
-		$ticker = "&#60" . $ticker . "&#62";
+		print( "<tr style=\"cursor: pointer;\" onclick=\"document.location='/message.php?message=" . $doc["id"]. "'\">\n" );
+		print( "<td style=\"vertical-align: middle;\"><b>" . $to . "</b></td>\n" );
+		print( "<td style=\"vertical-align: middle; width: 60%\">" . $doc["title"] . "</td>\n" );
+		print( "<td style=\"vertical-align: middle;\"><div class=\"pull-right\"><b>" . $doc["date"] . "</b></div></td>\n" );
+		print( "</tr>\n" );
 	}
-	print( "<ul class=\"list-group-item media thread\">\n" );
-	print( "<b>" . $doc["date"] . "</b>\n" );
-	print( "<a href=\"message.php?message=" . $doc["id"] . "\">" . $ticker . " " . $sender . " - " . $doc["title"] . "</a><br>\n" );
-	print( "</ul>\n" );
 }
+
+print( "</tbody>\n" );
+print( "</table>\n" );
 
 print( "</div>\n" );
 

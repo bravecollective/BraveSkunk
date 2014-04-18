@@ -62,7 +62,7 @@ foreach( $cursor as $doc )
 {
 	print( "<div class=\"list-group-item media thread\">\n" );
 	print( "<li>\n" );
-	print( date( "Y M j G:i:s", $doc["time"] ) . " - <a href=\"/logs.php?address=" . $doc["address"] ."\">" . $doc["address"] . "</a> - <a href=\"/logs.php?user=". $doc["user"] . "\">" . $doc["user"] . "</a> - " . $doc["url"] . "\n" );
+	print( date( "Y M d H:i:s", $doc["time"] ) . " - <a href=\"/logs.php?address=" . $doc["address"] ."\">" . $doc["address"] . "</a> - <a href=\"/logs.php?user=". $doc["user"] . "\">" . $doc["user"] . "</a> - " . $doc["url"] . "\n" );
 	print( "</li>\n" );
 	print( "</div>\n" );
 }

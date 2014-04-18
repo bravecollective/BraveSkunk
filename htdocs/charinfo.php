@@ -42,25 +42,47 @@ if( $m->braveskunk->apikeys->findOne( array( "charID" => (int)$id ) ) == null )
 
 print( "<div class=\"container\">\n" );
 print( "<h4>Outbox</h4>\n" );
+
+print( "<table class=\"table table-hover\">\n" );
+print( "<thead>\n" );
+print( "<tr>\n" );
+print( "<th>Subject</th>\n" );
+print( "<th><div class=\"pull-right\">Sent</div></th>\n" );
+print( "</tr>\n" );
+print( "</thead>\n" );
+print( "<tbody style=\"background-color: rgba( 0, 0, 0, 0.5 );\">\n" );
+
 $cursor = $m->braveskunk->mails->find( array( "sender" => (int)$id ) )->sort( array ( "date" => -1 ) );
 foreach( $cursor as $doc )
 {
-	print( "<ul class=\"list-group-item media thread\">\n" );
-	print( "<b>" .$doc["date"] . "</b>\n" );
-	print( "<a href=\"message.php?message=" . $doc["id"] . "\">" . $doc["title"] . "</a>\n" );
-	print( "</ul>\n" );
+	print( "<tr style=\"cursor: pointer;\" onclick=\"document.location='/message.php?message=" . $doc["id"]. "'\">\n" );
+	print( "<td style=\"vertical-align: middle; width: 60%\">" . $doc["title"] . "</td>\n" );
+	print( "<td style=\"vertical-align: middle;\"><div class=\"pull-right\"><b>" . $doc["date"] . "</b></div></td>\n" );
+	print( "</tr>\n" );
 }
+print( "</tbody>\n" );
+print( "</table>\n" );
 print( "</div>\n" );
 
 print( "<div class=\"container\">\n" );
 print( "<h4>Inbox</h4>\n" );
+
+print( "<table class=\"table table-hover\">\n" );
+print( "<thead>\n" );
+print( "<tr>\n" );
+print( "<th>Subject</th>\n" );
+print( "<th><div class=\"pull-right\">Sent</div></th>\n" );
+print( "</tr>\n" );
+print( "</thead>\n" );
+print( "<tbody style=\"background-color: rgba( 0, 0, 0, 0.5 );\">\n" );
+
 $cursor = $m->braveskunk->mails->find( array( "receiver" => array( '$regex' => new MongoRegex( "/.*" . $id . ".*/" ) ) ) )->sort( array ( "date" => -1 ) );
 foreach( $cursor as $doc )
 {
-	print( "<ul class=\"list-group-item media thread\">\n" );
-	print( "<b>" .$doc["date"] . "</b>\n" );
-	print( "<a href=\"message.php?message=" . $doc["id"] . "\">" . $doc["title"] . "</a><br>\n" );
-	print( "</ul>\n" );
+	print( "<tr style=\"cursor: pointer;\" onclick=\"document.location='/message.php?message=" . $doc["id"]. "'\">\n" );
+	print( "<td style=\"vertical-align: middle; width: 60%\">" . $doc["title"] . "</td>\n" );
+	print( "<td style=\"vertical-align: middle;\"><div class=\"pull-right\"><b>" . $doc["date"] . "</b></div></td>\n" );
+	print( "</tr>\n" );
 }
 
 print( "</div>\n" );
