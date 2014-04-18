@@ -19,7 +19,7 @@ define('USE_EXT', 'GMP');
 include_once( "settings.php" );
 
 // API Class Setup
-$api = new Brave\API('https://core.bravecollective.net/api', $application_id, $private_key, $public_key);
+$api = new Brave\API('https://core.braveineve.com/api', $application_id, $private_key, $public_key);
 
 // API Call Args
 $info_data = array(
