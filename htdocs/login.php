@@ -19,12 +19,12 @@ define('USE_EXT', 'GMP');
 include_once( "settings.php" );
 
 // API Class Setup
-$api = new Brave\API('https://core.braveineve.com/api', $application_id, $private_key, $public_key);
+$api = new Brave\API( $core_url, $application_id, $private_key, $public_key);
 
 // API Call Args
 $info_data = array(
-	'success' => 'http://ec2-54-201-154-61.us-west-2.compute.amazonaws.com/step2.php',
-	'failure' => 'http://ec2-54-201-154-61.us-west-2.compute.amazonaws.com/failure.php'
+	'success' => $skunk_host . '/step2.php',
+	'failure' => $skunk_host . '/failure.php'
 );
 $result = $api->core->authorize($info_data);
 

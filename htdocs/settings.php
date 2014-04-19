@@ -15,4 +15,10 @@ $public_key = '7d0a166c4f904acb0f68378b3397a2a7cdb81a37fa619fc935315292976f43349
 // App private key
 $private_key = '9fc41e50b6a4767b6e09e2912c1f38bb32000b8d994d97f85a823fc41f95b108';
 
+// Core url
+$core_url = 'https://core.braveineve.com/api';
+
+// DNS name of Skunk host
+$skunk_host = 'http://ec2-54-201-154-61.us-west-2.compute.amazonaws.com';
+
 ?>

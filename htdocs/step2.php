@@ -26,7 +26,7 @@ if( $token == NULL )
 }
 
 // API Class Setup
-$api = new Brave\API('https://core.bravecollective.net/api', $application_id, $private_key, $public_key);
+$api = new Brave\API($core_url, $application_id, $private_key, $public_key);
 
 // Hit /info method and get data from token
 $result = $api->core->info(array('token' => $token));
