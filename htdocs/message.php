@@ -60,41 +60,21 @@ if( strpos( $doc["receiver"], "," ) !== false )
 		if( $rcvrs == "" )
 		{
 			$rcvrs = "To: ";
-			if( $type == 0 )
-			{
-				$rcvrs = $rcvrs . "<a href=\"allyinfo.php?id=". $temp[$i] ."\">" . $name . "</a>";
-			}
-			if( $type == 1 )
-			{
-				$rcvrs = $rcvrs . "<a href=\"corpinfo.php?id=". $temp[$i] ."\">" . $name . "</a>";
-			}
-			if( $type == 2 )
-			{
-				$rcvrs = $rcvrs . "<a href=\"charinfo.php?id=". $temp[$i] ."\">" . $name . "</a>";
-			}
-			if( $type == 3 )
-			{
-				$rcvrs = $rcvrs . "<a href=\"mlinfo.php?id=". $temp[$i] ."\">" . $name . "</a>";
-			}
 		}
 		else
 		{
-			if( $type == 0 )
-			{
-				$rcvrs = $rcvrs . ", <a href=\"allyinfo.php?id=". $temp[$i] ."\">" . $name . "</a>";
-			}
-			if( $type == 1 )
-			{
-				$rcvrs = $rcvrs . ", <a href=\"corpinfo.php?id=". $temp[$i] ."\">" . $name . "</a>";
-			}
-			if( $type == 2 )
-			{
-				$rcvrs = $rcvrs . ", <a href=\"charinfo.php?id=". $temp[$i] ."\">" . $name . "</a>";
-			}
-			if( $type == 3 )
-			{
-				$rcvrs = $rcvrs . ", <a href=\"mlinfo.php?id=". $temp[$i] ."\">" . $name . "</a>";
-			}
+			$rcvrs = $rcvrs . ", ";
+		}
+		switch( $type )
+		{
+			case 0:	$rcvrs = $rcvrs . "<a href=\"allyinfo.php?id=". $temp[$i] ."\">" . $name . "</a>";
+				break;
+			case 1:	$rcvrs = $rcvrs . "<a href=\"corpinfo.php?id=". $temp[$i] ."\">" . $name . "</a>";
+				break;
+			case 2:	$rcvrs = $rcvrs . "<a href=\"charinfo.php?id=". $temp[$i] ."\">" . $name . "</a>";
+				break;
+			case 3:	$rcvrs = $rcvrs . "<a href=\"mlinfo.php?id=". $temp[$i] ."\">" . $name . "</a>";
+				break;
 		}
 	}
 }
