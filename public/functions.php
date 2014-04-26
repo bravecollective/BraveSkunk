@@ -78,6 +78,11 @@ function GetRights( $sid )
 	$session = $m->braveskunk->sessions->findOne( array( "session" => $sid ) );
 	unset( $m );
 
+	if( $session["rights"] == -1 )
+	{
+		header( "Location: /logout.php" );
+		exit();
+	}
 	return( $session["rights"] );
 }
 
