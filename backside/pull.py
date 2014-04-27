@@ -59,7 +59,7 @@ def GetMailListsFromDB():
 def GetAlliances():
 	global Alliances
 	r = requests.get( "https://api.eveonline.com/eve/AllianceList.xml.aspx" )
-	allyxml = ET.fromstring( r.text )
+	allyxml = ET.fromstring( r.content )
 	allylist = allyxml.findall( ".//*[@allianceID]" )
 	for ally in allylist:
 		id = int( ally.attrib["allianceID"] )
@@ -72,7 +72,7 @@ def GetMailingLists( reqStrings ):
 	global MailingLists
 	for key in reqStrings:
 		r = requests.get( "https://api.eveonline.com/char/mailinglists.xml.aspx?keyID=" + key["keyid"] + "&vCode=" + key["vCode"] + "&characterID=" + key["charID"] )
-		results = ET.fromstring( r.text )
+		results = ET.fromstring( r.content )
 		for row in results.iter( "row" ):
 			id = int( row.attrib["listID"] )
 			name = row.attrib["displayName"]
@@ -83,7 +83,7 @@ def GetRequestStrings( apikeys ):
 	reqStrings = []
 	for key in apikeys:
 		r = requests.get( "https://api.eveonline.com/account/APIKeyInfo.xml.aspx?keyID=" + key["keyid"] + "&vCode=" + key["vCode"] )
-		results = ET.fromstring( r.text )
+		results = ET.fromstring( r.content )
 		for character in results.iter( "row" ):
 			reqStrings.append( dict( keyid=key["keyid"], vCode=key["vCode"], charID=character.attrib["characterID"] ) )
 	return reqStrings
@@ -93,7 +93,7 @@ def FetchCorpData( id ):
 	global Corporations
 
 	r = requests.get( "https://api.eveonline.com/corp/CorporationSheet.xml.aspx?corporationID=" + str( id ) )
-	results = ET.fromstring( r.text )
+	results = ET.fromstring( r.content )
 
 	name = results.findall( ".//corporationName" )[0].text
 	ticker = results.findall( ".//ticker" )[0].text
@@ -109,7 +109,7 @@ def FetchCharData( id ):
 	global Characters
 
 	r = requests.get( "https://api.eveonline.com/eve/CharacterInfo.xml.aspx?characterID=" + str( id ) )
-	results = ET.fromstring( r.text )
+	results = ET.fromstring( r.content )
 
 	name = results.findall( ".//characterName" )[0].text
 	test = results.findall( ".//allianceID" )
@@ -129,7 +129,7 @@ def GetMails( reqStrings ):
 
 	for key in reqStrings:
 		r = requests.get( "https://api.eveonline.com/char/MailMessages.xml.aspx?keyID=" + key["keyid"] + "&vCode=" + key["vCode"] + "&characterID=" + key["charID"] )
-		apimails = ET.fromstring( r.text )
+		apimails = ET.fromstring( r.content )
 
 		messages = []
 		for message in apimails.iter( "row" ):
@@ -143,7 +143,7 @@ def GetMails( reqStrings ):
 				msglist = msglist + "," + messages[i]["messageID"]
 
 		r = requests.get( "https://api.eveonline.com/char/MailBodies.xml.aspx?keyID=" + key["keyid"] + "&vCode=" + key["vCode"] + "&characterID=" + key["charID"] + "&ids=" + msglist )
-		apibodies = ET.fromstring( r.text )
+		apibodies = ET.fromstring( r.content )
 
 		for message in messages:
 			# Translate ID strings to ints
@@ -188,7 +188,7 @@ def GetMails( reqStrings ):
 
 			# Determine if this mail's destination is an Alliance and store it
 			if( rcvr in Alliances and rcvr not in Allies ):
-				Allies[rcvr] = { "name": Alliances[rcvr]["name"], "ticker": Alliances[rcvr]["ticker"]
+				Allies[rcvr] = { "name": Alliances[rcvr]["name"], "ticker": Alliances[rcvr]["ticker"] }
 
 			bodytext = apibodies.findall( ".//*[@messageID=\'" + message["messageID"] + "\']" )[0].text
 			mails.append( dict( id=message["messageID"], sender=sendChar, date=message["sentDate"], receiver=rcvr, title=message["title"], body=bodytext ) )
