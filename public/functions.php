@@ -74,16 +74,55 @@ function GetName( $sid )
 
 function GetRights( $sid )
 {
+	require('vendor/autoload.php');
+	if( !defined( "USE_EXT" ) )
+	{
+		define('USE_EXT', 'GMP');
+	}
+	include( "settings.php" );
+
 	$m = new MongoClient();
 	$session = $m->braveskunk->sessions->findOne( array( "session" => $sid ) );
 	unset( $m );
 
-	if( $session["rights"] == -1 )
+	$api = new Brave\API($core_url, $application_id, $private_key, $public_key);
+	$result = $api->core->info( array( 'token' => $session["token"] ) );
+	$tags = $result->tags;
+	$rights = -1;
+
+	foreach( $tags as $right )
+	{
+		$temp = preg_split( "/\./", $right );
+		if( $temp[0] == "skunk" )
+		{
+			$right = $temp[1];
+		}
+
+		switch( $right )
+		{
+			case "member":	$val = 0;
+					break;
+			case "spai":	$val = 1;
+					break;
+			case "admin":	$val = 2;
+					break;
+			default:	$val = -1;
+					break;
+		}
+
+		if( $val > $rights )
+		{
+			$rights = $val;
+		}
+	}
+
+	if( $rights == -1 )
 	{
 		header( "Location: /logout.php" );
 		exit();
 	}
-	return( $session["rights"] );
+
+	return( $rights );
 }
 
 function ValID( $id )

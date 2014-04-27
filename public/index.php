@@ -12,6 +12,7 @@ if( !CheckSession( $sid ) )
 }
 
 LogAccess( $sid );
+$rights = GetRights( $sid );
 
 include( "header.html" );
 
@@ -20,7 +21,6 @@ $m = new MongoClient();
 print( "<div class=\"container\">\n" );
 print( "<div class=\"page-header\"><h1>Spais-R-Us</h1></div>\n" );
 
-$rights = GetRights( $sid );
 if( $rights == 1 || $rights == 2 )
 {
 	print( "<ul class=\"nav nav-pills pull-right\">\n" );

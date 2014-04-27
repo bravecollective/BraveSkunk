@@ -13,7 +13,10 @@ $sid = session_id();
 
 // include composer autoloader
 require('vendor/autoload.php');
-define('USE_EXT', 'GMP');
+if( !defined( "USE_EXT" ) )
+{
+	define('USE_EXT', 'GMP');
+}
 
 // API Keys
 include_once( "settings.php" );
@@ -36,37 +39,9 @@ $name = $result->character->name;
 $tags = $result->tags;
 // Set expiry for time of page load + 1 week
 $expiry = $_SERVER["REQUEST_TIME"] + 604800;
-// Init rights variable
-$rights = 0;
-
-foreach( $tags as $right )
-{
-	$temp = explode( ".", $right );
-	if( $temp[0] == "skunk" )
-	{
-		$right = $temp[1];
-	}
-
-	switch( $right )
-	{
-		case "member":	$val = 0;
-				break;
-		case "spai":	$val = 1;
-				break;
-		case "admin":	$val = 2;
-				break;
-		default:	$val = 0;
-				break;
-	}
-
-	if( $val > $rights )
-	{
-		$rights = $val;
-	}
-}
 
 // Build database insertion array
-$row = array( "session" => $sid, "name" => $name, "rights" => $rights, "expiry" => $expiry );
+$row = array( "session" => $sid, "name" => $name, "token" => $token, "expiry" => $expiry );
 
 $m = new MongoClient();
 
