@@ -13,7 +13,10 @@ if( CheckSession( $sid ) )
 
 // include composer autoloader
 require('vendor/autoload.php');
-define('USE_EXT', 'GMP');
+if( !defined( "USE_EXT" ) )
+{
+	define('USE_EXT', 'GMP');
+}
 
 // API Keys
 include_once( "settings.php" );
