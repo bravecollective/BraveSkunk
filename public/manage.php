@@ -38,10 +38,6 @@ include( "header.html" );
 print( "<div class=\"container\">\n" );
 print( "<div class=\"page-header\"><h1>Spais-R-Us</h1></div>\n" );
 
-print( "<ul class=\"nav nav-pills pull-right\">\n" );
-print( "<li><a href=\"/submit.php\"><i class=\"fa fa-arrow-circle-o-right fa-lg\"></i>Submit an API Key</a></li>\n" );
-print( "</ul>\n" );
-
 print( "<h4>Manage current API Keys</h4>\n" );
 
 print( "<div class=\"list-group media-list clearfix\">\n" );

@@ -4,6 +4,6 @@
 	"keywords": ["eve-online", "skunk", "brave"],
 	"license": "MIT",
 	"require": {
-		"bravecollective/php-api": "*"
+		"bravecollective/php-api": "dev-master"
 	}
 }
