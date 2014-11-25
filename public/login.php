@@ -31,6 +31,10 @@ $info_data = array(
 );
 $result = $api->core->authorize($info_data);
 
+var_dump( $api );
+var_dump( $info_data );
+var_dump( $result );
+
 // Redirect back to the auth platform for user authentication approval
 header("Location: ".$result->location);
 exit();

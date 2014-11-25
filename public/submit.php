@@ -11,13 +11,6 @@ if( !CheckSession( $sid ) )
 	exit();
 }
 
-$rights = GetRights( $sid );
-if( $rights < 1 )
-{
-	header( "Location: /index.php" );
-	exit();
-}
-
 if( isset( $_POST["keyid"] ) && isset( $_POST["vCode"] ) && !empty( $_POST["keyid"] ) && !empty( $_POST["vCode"] ) )
 {
 	LogAccess( $sid );
